@@ -9,7 +9,7 @@
 # Class PlaintextToHtmlConverter:
 1. Comments smell.
 2. Long method smell.
-3. Inappropriate Naming smell (say).
+3. Inappropriate Naming smell.
 4. Large Class.
 
 
