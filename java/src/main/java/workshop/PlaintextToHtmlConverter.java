@@ -74,3 +74,15 @@ public class PlaintextToHtmlConverter {
         convertedLine.add(characterToConvert);
     }
 }
+
+
+class FileReader{
+    private String fileName;
+    FileReader(String fileName){
+        this.fileName = fileName;
+    }
+
+    public String readFile() throws Exception {
+        return new String(Files.readAllBytes(Paths.get(this.fileName)));
+    }
+}
