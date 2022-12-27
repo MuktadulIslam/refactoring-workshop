@@ -1,6 +1,5 @@
 package workshop;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,22 +13,26 @@ public class PlaintextToHtmlConverter {
     String characterToConvert;
 
     public String toHtml() throws Exception {
-        String text = read();
+        FileReader fileReader = new FileReader("sample.txt");
+        String text = fileReader.readFile();
         String htmlLines = basicHtmlEncode(text);
         return htmlLines;
     }
 
-    protected String read() throws IOException {
-        return new String(Files.readAllBytes(Paths.get("sample.txt")));
-    }
-
     private String basicHtmlEncode(String source) {
         this.source = source;
-        i = 0;
         result = new ArrayList<>();
         convertedLine = new ArrayList<>();
-        characterToConvert = stashNextCharacterAndAdvanceThePointer();
+        characterToConvert = getCharFormat();
+        encodeChar();
 
+        addANewLine();
+        String finalResult = String.join("<br />", result);
+        return finalResult;
+    }
+
+    private void encodeChar(){
+        int i = 0;
         while (i <= this.source.length()) {
             switch (characterToConvert) {
                 case "<":
@@ -45,35 +48,41 @@ public class PlaintextToHtmlConverter {
                     addANewLine();
                     break;
                 default:
-                    pushACharacterToTheOutput();
+                    pushChar();
             }
 
             if (i >= source.length()) break;
 
-            characterToConvert = stashNextCharacterAndAdvanceThePointer();
+            characterToConvert = getCharFormat();
         }
-        addANewLine();
-        String finalResult = String.join("<br />", result);
-        return finalResult;
     }
 
-    //pick the character from source string
-    //and increment the pointer
-    private String stashNextCharacterAndAdvanceThePointer() {
+
+    private String getCharFormat() {
         char c = source.charAt(i);
         i += 1;
         return String.valueOf(c);
     }
 
-    //stringfy convertedLine array and push into result
-    //reset convertedLine
     private void addANewLine() {
         String line = String.join("", convertedLine);
         result.add(line);
         convertedLine = new ArrayList<>();
     }
 
-    private void pushACharacterToTheOutput() {
+    private void pushChar() {
         convertedLine.add(characterToConvert);
+    }
+}
+
+
+class FileReader{
+    private String fileName;
+    FileReader(String fileName){
+        this.fileName = fileName;
+    }
+
+    public String readFile() throws Exception {
+        return new String(Files.readAllBytes(Paths.get(this.fileName)));
     }
 }
